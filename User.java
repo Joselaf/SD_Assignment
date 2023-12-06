@@ -12,4 +12,12 @@ public class User {
         this.username = username;
         this.password = password;
     }
+
+    public String get_user_username(User u) {
+        return u.username;
+    }
+
+    public String get_user_password(User u) {
+        return u.password;
+    }
 }
