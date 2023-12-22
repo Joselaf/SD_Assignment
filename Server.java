@@ -1,7 +1,8 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-//import sd23(1).sd
+import sd23.JobFunction;
+import sd23.JobFunctionException;
 
 public class Server {
 
@@ -9,6 +10,19 @@ public class Server {
     private static Map<String, String> usuarios = new HashMap<>();
 
     public static void main(String args[]) throws IOException {
+        // try {
+        //     // obter a tarefa de ficheiro, socket, etc...
+        //     byte[] job = new byte[1000];
+
+        //     // executar a tarefa
+        //     byte[] output = JobFunction.execute(job);
+
+        //     // utilizar o resultado ou reportar o erro
+        //     System.err.println("success, returned "+output.length+" bytes");
+        // } catch (JobFunctionException e) {
+        //     System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
+        // }
+
         ServerSocket ss = null;
         try{
             ss = new ServerSocket(PORTA);
