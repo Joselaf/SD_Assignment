@@ -26,6 +26,18 @@ public class Client {
             String resposta = in.readLine();
             System.out.println(resposta);
 
+
+            while (true){
+                System.out.println("Escolha a ação: 1 para dizer Olá; 9 para sair.");
+                String acdois = consoleInput.readLine();
+                out.println(acdois);
+
+                if ("9".equals(acdois)) {
+                    break; // Sair do loop se o usuário escolher "9"
+                }
+
+            }
+
             s.close();
         } catch (IOException e) {
             e.printStackTrace();

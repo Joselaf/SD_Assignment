@@ -1,27 +1,15 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import sd23.JobFunction;
-import sd23.JobFunctionException;
+import sd23.*;
 
 public class Server {
 
     private static final int PORTA = 4999;
     private static Map<String, String> usuarios = new HashMap<>();
+    private static Queue<String> filaTarefas = new LinkedList<>();
 
     public static void main(String args[]) throws IOException {
-        // try {
-        //     // obter a tarefa de ficheiro, socket, etc...
-        //     byte[] job = new byte[1000];
-
-        //     // executar a tarefa
-        //     byte[] output = JobFunction.execute(job);
-
-        //     // utilizar o resultado ou reportar o erro
-        //     System.err.println("success, returned "+output.length+" bytes");
-        // } catch (JobFunctionException e) {
-        //     System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
-        // }
 
         ServerSocket ss = null;
         try{
@@ -31,6 +19,27 @@ public class Server {
             while (true) {
                 Socket s = ss.accept();
                 new Thread(new AutenticacaoHandler(s)).start();
+                System.out.println("Client connected");
+
+                try {
+                    // obter a tarefa de ficheiro, socket, etc...
+                    byte[] job = new byte[1000];
+
+                    adicionarTarefaAFila();
+        
+                    // executar a tarefa
+                    byte[] output = JobFunction.execute(job);
+        
+                    // utilizar o resultado ou reportar o erro
+                    System.out.println("success, returned "+output.length+" bytes");
+
+                    System.out.println(obterNumeroTarefasPendentes() + " tarefas pendentes");
+
+                    removerTarefaDaFila();
+
+                } catch (JobFunctionException e) {
+                    System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,9 +51,7 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        System.out.println("Client connected");
+        }    
     }
 
     private static class AutenticacaoHandler implements Runnable {
@@ -69,6 +76,14 @@ public class Server {
                     registrarUsuario();
                 } else if ("autenticacao".equals(acao)) {
                     autenticarUsuario();
+                }
+
+                String acdois = in.readLine();
+                if ("1".equals(acdois)){
+                    out.println("Olá");
+
+                }else if ("9".equals(acdois)){
+                    clienteSocket.close();
                 }
 
             } catch (IOException e) {
@@ -99,5 +114,19 @@ public class Server {
                 out.println("Falha na autenticação. Verifique o nome de usuário e a senha.");
             }
         }
+    }
+    private static synchronized void adicionarTarefaAFila() {
+        // Adicionar a tarefa à fila
+        filaTarefas.add("Nova Tarefa");
+    }
+
+    private static synchronized void removerTarefaDaFila() {
+        // Remover a tarefa da fila
+        filaTarefas.poll();
+    }
+
+    private static synchronized int obterNumeroTarefasPendentes() {
+        // Obter o número de tarefas pendentes na fila
+        return filaTarefas.size();
     }
 }
